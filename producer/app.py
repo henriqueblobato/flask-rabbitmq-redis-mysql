@@ -7,6 +7,15 @@ import json
 from uuid import uuid4
 
 from exceptions import CreditRequestException
+import redis
+
+
+redis_conn = redis.Redis(
+    host='redis',
+    port=6379,
+    charset="utf-8",
+    decode_responses=True
+)
 
 
 amqp_url = os.environ.get('AMQP_URL')
@@ -41,6 +50,25 @@ def health_check():
     )
 
 
+@app.route('/credit-validation', methods=['GET'])
+def get_ticket():
+    ticket_number = request.args.get('ticket')
+    age = redis_conn.get(f'age{ticket_number}')
+    value = redis_conn.get(f'value{ticket_number}')
+    response = {'ticket': ticket_number}
+
+    if age and value:
+        print(age, value)
+        response['status'] = 'APPROVED'
+    else:
+        response['status'] = 'NOT approved'
+
+    return Response(
+        response=json.dumps(response),
+        status=200
+    )
+
+
 @app.route('/credit-request', methods=['POST'])
 def credit_request():
     try:
@@ -58,7 +86,7 @@ def credit_request():
         if response_age and response_value:
             response = {
                 'ticket': ticket_number,
-                'message': 'Your request is now being processed'
+                'status': 'Your request is now being processed'
             }
             return Response(
                 response=json.dumps(response),
