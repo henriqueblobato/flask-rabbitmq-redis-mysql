@@ -37,7 +37,7 @@ curl -s "localhost:8000/credit-validation?ticket=6826e88b-dc6d-4c27-b480-eb52951
 - Enviando uma request solicitando um pedido de crédito
 
 <img width="902" alt="Screen Shot 2021-07-10 at 20 34 18" src="https://user-images.githubusercontent.com/18133417/125178855-e95aa600-e1be-11eb-9597-f1e5879be878.png">
-- O pedido de crédito é recebido e quebraod em duas partes
+- O pedido de crédito é recebido e quebrado em duas partes, idade e valor
 - A task de 'age' é enviada para o tópico de 'age', no qual será processada por sua respectiva tarefa assíncrona, o mesmoa contece com a task 'value'
 - Caso passem nas condições, seus valores são adicionados no banco de dados
 
@@ -45,3 +45,5 @@ curl -s "localhost:8000/credit-validation?ticket=6826e88b-dc6d-4c27-b480-eb52951
 <img width="689" alt="Screen Shot 2021-07-10 at 20 41 34" src="https://user-images.githubusercontent.com/18133417/125178888-3e96b780-e1bf-11eb-8dfe-40da0534ebd9.png">
 - Se as duas condições forem aceitas o status de APPROVED será adicionado ao ticket, caso não seja, ele será NOT approved, como vemos no exemplo de age=17,value=500000
 <img width="883" alt="Screen Shot 2021-07-10 at 20 44 19" src="https://user-images.githubusercontent.com/18133417/125178927-a6e59900-e1bf-11eb-93a2-8972bcbb494a.png">
+- Novamente o servidor quebra a resposta e manda seus valores para seus respectivos tópicos que serão tratados pelos workers, nesse caso, um exemplo não autorizado, no qual um valor monetário acima da condição
+<img width="1004" alt="Screen Shot 2021-07-10 at 20 56 16" src="https://user-images.githubusercontent.com/18133417/125179102-874f7000-e1c1-11eb-8db4-837048414732.png">
