@@ -1,33 +1,52 @@
-version: '3.1'
+
+version: "3.2"
 services:
-  rabbitmq:
-    hostname: "rabbitmq"
-    image: rabbitmq:3-alpine
-    ports:
-      - 15672:15672
-      - 5673:5672
-    networks:
-      - credit_request_network
+
   redis:
-    hostname: "redis"
+    hostname: redis
+    container_name: redis
     image: redis:5-alpine
     ports:
-      - 6379:6379
-    networks:
-      - credit_request_network
-  app:
-    hostname: "app"
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8000:8000
-    depends_on:
-      - rabbitmq
-      - redis
-    networks:
-      - credit_request_network
+      - '6379:6379'
 
-networks:
-  credit_request_network:
-    driver: bridge
+  rabbit_mq:
+    image: rabbitmq:3.8-rc-management
+    container_name: rabbit_mq
+    ports:
+        - '5672:5672'
+        - '15672:15672'
+    volumes:
+      - rabbit_mqdata:/usr/share/rabbitmq/data
+
+  producer:
+    build: producer
+    ports:
+      - '8000:8000'
+    depends_on:
+        - rabbit_mq
+    environment:
+        AMQP_URL: 'amqp://rabbit_mq?connection_attempts=5&retry_delay=5'
+    volumes:
+      - ./producer:/usr/src/app/producer
+
+  consumer_age:
+    build: consumer_age
+    depends_on:
+        - rabbit_mq
+    environment:
+        AMQP_URL: 'amqp://rabbit_mq?connection_attempts=1&retry_delay=1'
+    volumes:
+      - ./consumer_age:/usr/src/app/consumer_age
+
+  consumer_value:
+    build: consumer_value
+    depends_on:
+        - rabbit_mq
+    environment:
+        AMQP_URL: 'amqp://rabbit_mq?connection_attempts=1&retry_delay=1'
+    volumes:
+      - ./consumer_value:/usr/src/app/consumer_value
+
+volumes:
+    rabbit_mqdata:
+      driver: local
