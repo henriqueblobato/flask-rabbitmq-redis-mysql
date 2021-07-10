@@ -25,6 +25,7 @@ curl -s "localhost:8000/credit-validation?ticket=6826e88b-dc6d-4c27-b480-eb52951
 
 ![diagram](https://user-images.githubusercontent.com/18133417/125178614-2faf0580-e1bd-11eb-89ef-26606c9225fa.png)
 - A arquitetura escolhida para estudo foi a de um sistema distribuído assíncrono, na qual usando o serviço de mensageria RabbitMQ comunica-se entre diferentes tasks de um mesmo sistema.
+- Temos dois workers totalmente desacoplados e independentes entre si, um para cada tópico. Um dos workers é responsável pela regra de idades, e outro pelas verificações de quantidades monetárias
 
 ## Escalabilidade
 - Separando-se em tópicos organizam-se as responsabilidades e desacoplamentos de cada routing-key
