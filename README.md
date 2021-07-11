@@ -33,13 +33,13 @@ curl -s "localhost:8000/credit-validation?ticket=6826e88b-dc6d-4c27-b480-eb52951
 - O redis tem papel duplo entre performance e escalabilidade, que por sua vez acumulam-se resultados rápidos que podem ser armazenados em quandes quantidades
 
 ## Análise das interações
-<img width="891" alt="Screen Shot 2021-07-10 at 20 34 07" src="https://user-images.githubusercontent.com/18133417/125178845-d5af3f80-e1be-11eb-9204-0934d9ad6317.png">
 - Enviando uma request solicitando um pedido de crédito
+<img width="891" alt="Screen Shot 2021-07-10 at 20 34 07" src="https://user-images.githubusercontent.com/18133417/125178845-d5af3f80-e1be-11eb-9204-0934d9ad6317.png">
 
-<img width="902" alt="Screen Shot 2021-07-10 at 20 34 18" src="https://user-images.githubusercontent.com/18133417/125178855-e95aa600-e1be-11eb-9597-f1e5879be878.png">
 - O pedido de crédito é recebido e quebrado em duas partes, idade e valor
 - A task de 'age' é enviada para o tópico de 'age', no qual será processada por sua respectiva tarefa assíncrona, o mesmoa contece com a task 'value'
 - Caso passem nas condições, seus valores são adicionados no banco de dados
+<img width="902" alt="Screen Shot 2021-07-10 at 20 34 18" src="https://user-images.githubusercontent.com/18133417/125178855-e95aa600-e1be-11eb-9597-f1e5879be878.png">
 
 ## Resultados
 <img width="689" alt="Screen Shot 2021-07-10 at 20 41 34" src="https://user-images.githubusercontent.com/18133417/125178888-3e96b780-e1bf-11eb-8dfe-40da0534ebd9.png">
